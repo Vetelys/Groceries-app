@@ -1,0 +1,23 @@
+<resources>
+    <string-array name="reseptit">
+        <item>Hernekeitto</item>
+        <item>Kanariisi</item>
+        <item>Nistipata</item>
+        <item>Kalakeitto</item>
+        <item>Perunamuussi</item>
+        <item>Sämpylät</item>
+        <item>Kurkkukeitto</item>
+        <item>maga ron box</item>
+        <item>ham bully</item>
+    </string-array>
+
+    <string name="app_name">Ostoslista</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="add_recipe">Add Recipe</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="recipes">Recipes</string>
+    <string name="view_recipe">View</string>
+    <string name="delete_recipe">Delete</string>
+</resources>
