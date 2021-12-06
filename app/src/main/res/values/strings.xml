@@ -7,8 +7,19 @@
         <item>Perunamuussi</item>
         <item>Sämpylät</item>
         <item>Kurkkukeitto</item>
-        <item>maga ron box</item>
-        <item>ham bully</item>
+        <item>makaronilaatikko</item>
+        <item>kinkkukiusaus</item>
+    </string-array>
+
+    <string-array name="ostoslista">
+        <item>Osta tää</item>
+        <item>Tää kans</item>
+        <item>Tää on hyvä</item>
+        <item>Älä unoha tätä</item>
+        <item>Perunat</item>
+        <item>Sämpylät</item>
+        <item>Kurkku</item>
+        <item>Sipuli</item>
     </string-array>
 
     <string name="app_name">Ostoslista</string>
@@ -20,4 +31,5 @@
     <string name="recipes">Recipes</string>
     <string name="view_recipe">View</string>
     <string name="delete_recipe">Delete</string>
+    <string name="add_product_to_shopping_list">Add product to shopping list</string>
 </resources>

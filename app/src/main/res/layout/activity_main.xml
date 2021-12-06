@@ -4,69 +4,55 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shoppinglist_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <CheckBox
-                    android:id="@+id/checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true">
-                </CheckBox>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/checkbox"
-                    android:text="Tää asia pitää ostaa"
-                    android:layout_margin="20dp">
-                </TextView>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <CheckBox
-                    android:id="@+id/checkbox2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true">
-                </CheckBox>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/checkbox2"
-                    android:text="Tää asia pitää ostaa myös"
-                    android:layout_margin="20dp">
-                </TextView>
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+        android:layout_height="0dp"/>
 
     <RelativeLayout
+        android:gravity="center|bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
-            android:id="@+id/recipesButton"
+            android:id="@+id/editProduct_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_icon" />
+
+        <EditText
+            android:id="@+id/newProduct_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_toStartOf="@id/addProduct_button"
+            android:layout_toEndOf="@id/editProduct_button"
+            android:hint="@string/add_product_to_shopping_list" />
+
+        <Button
+            android:id="@+id/addProduct_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/recipes"
-            android:layout_marginStart="10dp"
-        />
+            android:text="@string/add"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"/>
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/recipesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recipes"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        />
+
 
 
 </LinearLayout>

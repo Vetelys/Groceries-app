@@ -8,4 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#B0AEA7</color>
+    <color name="backgroundsininen">#4BA0D1</color>
+    <color name="tummasininen">#327DA8</color>
+    <color name="tummempisininen">#1E81BA</color>
 </resources>

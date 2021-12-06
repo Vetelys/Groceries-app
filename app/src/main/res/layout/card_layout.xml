@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
-    android:layout_margin="5dp"
-    app:cardBackgroundColor="#34CCEB"
+    android:layout_margin="2dp"
+    app:cardBackgroundColor="@color/tummasininen"
     app:cardCornerRadius="12dp"
     app:cardElevation="3dp"
     app:contentPadding="4dp">
