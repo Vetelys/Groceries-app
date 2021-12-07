@@ -18,7 +18,6 @@ class RecipeActivity : AppCompatActivity(){
     private var adapter: RecyclerView.Adapter<CustomAdapter.ViewHolder>? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe)
@@ -57,10 +56,6 @@ class RecipeActivity : AppCompatActivity(){
         addButton.setOnClickListener {
             val intent = Intent(this, AddRecipeActivity::class.java)
             getContent.launch(intent)
-        }
-        recyclerView.setOnLongClickListener {
-            Toast.makeText(this, "Painoit tätä pitkään", Toast.LENGTH_SHORT).show()
-            return@setOnLongClickListener true
         }
 
     }

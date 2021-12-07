@@ -21,6 +21,9 @@ class ShoppingListAdapter(private val dataSet: MutableList<String>) : RecyclerVi
             }
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if(isChecked){
+                    val db = DBHelper.getInstance(itemView.context)
+                    val name = dataSet[adapterPosition]
+                    db.removeProduct(name)
                     dataSet.removeAt(adapterPosition)
                     notifyItemRemoved(adapterPosition)
                 }

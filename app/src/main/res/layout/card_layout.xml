@@ -25,6 +25,7 @@
             android:layout_width="236dp"
             android:layout_height="39dp"
             android:textSize="30sp"
+            android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/recipe_image"/>
 

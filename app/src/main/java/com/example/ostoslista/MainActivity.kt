@@ -1,12 +1,13 @@
 package com.example.ostoslista
 
+import com.example.tools.showKeyBoard
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -24,14 +25,15 @@ class MainActivity : AppCompatActivity(){
         val productText = findViewById<EditText>(R.id.newProduct_text)
 
         val recyclerView = findViewById<RecyclerView>(R.id.shoppinglist_recyclerview)
+        val db = DBHelper.getInstance(this)
 
-        val ostokset: Array<String> = resources.getStringArray(R.array.ostoslista)
-        val ostoslista = ostokset.toMutableList()
+        val products: ArrayList<String> = db.getAllProducts()
+        val shoppingList = products.toMutableList()
 
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        adapter = ShoppingListAdapter(ostoslista)
+        adapter = ShoppingListAdapter(shoppingList)
         recyclerView.adapter = adapter
 
         recipesButton.setOnClickListener {
@@ -40,14 +42,25 @@ class MainActivity : AppCompatActivity(){
             }
 
         addButton.setOnClickListener {
-            val tuote = productText.text.toString()
-            ostoslista.add(tuote)
-            adapter?.notifyItemInserted(ostoslista.size - 1)
-
+            when (val product = productText.text.toString()) {
+                "" -> {
+                    Toast.makeText(this, "Add product name before adding it to the list", Toast.LENGTH_SHORT).show()
+                }
+                in shoppingList -> {
+                    Toast.makeText(this, "Product is already on the list", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    shoppingList.add(product)
+                    adapter?.notifyItemInserted(shoppingList.size - 1)
+                    db.insertProduct(product)
+                    productText.text.clear()
+                }
+            }
         }
 
         editButton.setOnClickListener {
             productText.requestFocus()
+            showKeyBoard(findViewById<View>(R.id.content).rootView)
         }
     }
 
