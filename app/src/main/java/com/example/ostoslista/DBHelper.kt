@@ -27,16 +27,14 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         private const val TBL_SHOPPINGLIST = "shopping_list"
 
         private const val ID = "id"
-        private const val INGREDIENT_ID = "ingredient_id"
         private const val RECIPE_ID = "recipe_id"
         private const val NAME = "name"
-        private const val AMOUNT = "amount"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTblIngredient = ("CREATE TABLE $TBL_INGREDIENTS ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $NAME TEXT, $AMOUNT TEXT, $RECIPE_ID INTEGER)")
-        val createTblRecipe = ("CREATE TABLE $TBL_RECIPES ($ID INTEGER PRIMARY KEY, $NAME TEXT, $INGREDIENT_ID INTEGER)")
-        val createTblShoppingList = ("CREATE TABLE $TBL_SHOPPINGLIST ($ID INTEGER PRIMARY KEY, $NAME TEXT)")
+        val createTblIngredient = ("CREATE TABLE $TBL_INGREDIENTS ($ID INTEGER PRIMARY KEY, $NAME TEXT, $RECIPE_ID INTEGER)")
+        val createTblRecipe = ("CREATE TABLE $TBL_RECIPES ($ID INTEGER PRIMARY KEY, $NAME TEXT)")
+        val createTblShoppingList = ("CREATE TABLE $TBL_SHOPPINGLIST ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $NAME TEXT)")
         db?.execSQL(createTblIngredient)
         db?.execSQL(createTblRecipe)
         db?.execSQL(createTblShoppingList)
@@ -48,20 +46,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         db.execSQL("""DROP TABLE IF EXISTS $TBL_SHOPPINGLIST""")
         onCreate(db)
     }
-    /*
-    fun insertIngredient(ing: Ingredient): Long{
-        val db = this.writableDatabase
-        val contentValues = ContentValues()
-
-        val success = db.insert(TBL_INGREDIENTS, null, contentValues)
-        db.close()
-        return success
-
-    }
-    fun insertRecipe(recipe: Recipe): Long{
-
-    }
-    */
 
     fun insertProduct(product: String): Long{
         val db = this.writableDatabase
@@ -107,5 +91,116 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         cursor.close()
         db.close()
         return productList
+    }
+
+    fun addRecipe(recipe_name: String, ingredients: ArrayList<String>) : Long{
+        val db = this.writableDatabase
+        val recipeIdQuery = "SELECT COALESCE(MAX($ID), 0) AS $ID FROM $TBL_RECIPES"
+        val ingredientIdQuery = "SELECT COALESCE(MAX($ID), 0) AS $ID FROM $TBL_INGREDIENTS"
+
+        val recipeQuery = db.rawQuery(recipeIdQuery, null)
+        var success: Long = -1
+
+        if(recipeQuery.moveToFirst()) {
+            val recipeId = recipeQuery.getInt(0);
+
+
+            val recipeContentValues = ContentValues()
+            recipeContentValues.put(NAME, recipe_name)
+            recipeContentValues.put(ID, recipeId + 1)
+
+            success = db.insert(TBL_RECIPES, null, recipeContentValues)
+
+            if(success != -1L) {
+                for (ingredient in ingredients) {
+                    val ingredientQuery = db.rawQuery(ingredientIdQuery, null)
+
+                    if(ingredientQuery.moveToFirst()){
+
+                        val ingredientId = ingredientQuery.getInt(0)
+
+                        val contentValues = ContentValues()
+                        contentValues.put(NAME, ingredient)
+                        contentValues.put(ID, ingredientId + 1)
+                        contentValues.put(RECIPE_ID, recipeId + 1)
+
+                        success = db.insert(TBL_INGREDIENTS, null, contentValues)
+
+                    }
+                }
+            }
+        }
+
+        db.close()
+        return success
+    }
+
+    fun removeRecipe(recipeName: String) {
+        val db = this.writableDatabase
+        val recipeQuery = """SELECT $ID FROM $TBL_RECIPES WHERE $NAME = "$recipeName""""
+        val queryResult = db.rawQuery(recipeQuery, null)
+
+        if(queryResult.moveToFirst()) {
+            val recipeId = queryResult.getInt(0)
+
+            db.delete(TBL_RECIPES, "$ID=$recipeId", null)
+            db.delete(TBL_INGREDIENTS, "$RECIPE_ID=$recipeId", null)
+            db.close()
+
+        }
+    }
+
+    @SuppressLint("Range")
+    fun getRecipes() : ArrayList<String> {
+        val recipeList: ArrayList<String> = ArrayList()
+        val query = "SELECT $NAME FROM $TBL_RECIPES"
+        val db = this.readableDatabase
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(query, null)
+        }catch(e: Exception){
+            e.printStackTrace()
+            db.execSQL(query)
+            return ArrayList()
+        }
+        var recipeName: String
+        if(cursor.moveToFirst()){
+            do{
+                recipeName = cursor.getString(cursor.getColumnIndex(NAME))
+                recipeList.add(recipeName)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return recipeList
+    }
+
+    @SuppressLint("Range")
+    fun getAllIngredients(recipe_name: String): ArrayList<String> {
+        val ingredientList: ArrayList<String> = ArrayList()
+        val query = """SELECT $NAME FROM $TBL_INGREDIENTS WHERE $RECIPE_ID = (SELECT $ID FROM $TBL_RECIPES WHERE $NAME = "$recipe_name")"""
+        val db = this.readableDatabase
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(query, null)
+        }catch(e: Exception){
+            e.printStackTrace()
+            db.execSQL(query)
+            return ArrayList()
+        }
+        var ingredientName: String
+        if(cursor.moveToFirst()){
+            do{
+                ingredientName = cursor.getString(cursor.getColumnIndex(NAME))
+                ingredientList.add(ingredientName)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return ingredientList
     }
 }

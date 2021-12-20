@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity(){
         val recyclerView = findViewById<RecyclerView>(R.id.shoppinglist_recyclerview)
         val db = DBHelper.getInstance(this)
 
-        val products: ArrayList<String> = db.getAllProducts()
-        val shoppingList = products.toMutableList()
+        val shoppingList: ArrayList<String> = db.getAllProducts()
+
 
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager

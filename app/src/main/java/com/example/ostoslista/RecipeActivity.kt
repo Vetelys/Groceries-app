@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,20 +22,15 @@ class RecipeActivity : AppCompatActivity(){
         setContentView(R.layout.activity_recipe)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recipe_recyclerview)
-        /*
-        TODO:
-        Tässä ladataan reseptit sql tietokannasta
-        ja annetaan ne adapterille
-         */
+        val db = DBHelper.getInstance(this)
 
-        val names: Array<String> = resources.getStringArray(R.array.reseptit)
-        val nimet = names.toMutableList()
+        val recipes: ArrayList<String> = db.getRecipes()
 
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
 
-        adapter = CustomAdapter(nimet)
+        adapter = CustomAdapter(recipes)
         recyclerView.adapter = adapter
 
         val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult? ->
@@ -44,8 +38,8 @@ class RecipeActivity : AppCompatActivity(){
                 if(result.data != null) {
                     val new_recipe = result.data!!.getStringExtra("Name").toString()
                     Log.d("Uusi resepti", new_recipe)
-                    nimet.add(new_recipe)
-                    adapter?.notifyItemInserted(nimet.size - 1)
+                    recipes.add(new_recipe)
+                    adapter?.notifyItemInserted(recipes.size - 1)
                 }
             }
         }
@@ -55,6 +49,7 @@ class RecipeActivity : AppCompatActivity(){
 
         addButton.setOnClickListener {
             val intent = Intent(this, AddRecipeActivity::class.java)
+            intent.putStringArrayListExtra("ExistingRecipes", recipes)
             getContent.launch(intent)
         }
 

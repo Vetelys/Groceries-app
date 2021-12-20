@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -24,6 +25,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?){
+        val existingRecipes = intent.getStringArrayExtra("ExistingRecipes")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
         val recipeName = findViewById<EditText>(R.id.recipeName)
@@ -40,26 +42,27 @@ class AddRecipeActivity : AppCompatActivity() {
             finish()
         }
         addBtn.setOnClickListener {
-            when {
-                recipeName.text.isEmpty() -> {
-                    Toast.makeText(this, "Anna reseptille nimi", Toast.LENGTH_SHORT).show()
+            if (recipeName.text.isEmpty()) {
+                Toast.makeText(this, "Anna reseptille nimi", Toast.LENGTH_SHORT).show()
+            }
+            else if (index == 1) {
+                Toast.makeText(this, "Reseptissä ei ole ainesosia", Toast.LENGTH_SHORT).show()
+            }
+            else if (existingRecipes != null) {
+                if(recipeName.text.toString() in existingRecipes){
+                    Toast.makeText(this, "Resepti tällä nimellä on jo olemassa.", Toast.LENGTH_SHORT).show()
                 }
-                index == 1 -> {
-                    Toast.makeText(this, "Reseptissä ei ole ainesosia", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    /*
-                            Nämä tallennetaan sql tässä
-                            recipeName.text.toString())
-                            ingredients
-                            */
-                    val intent = Intent(this, RecipeActivity::class.java)
-                    intent.putExtra("Name", recipeName.text.toString())
-                    intent.putStringArrayListExtra("Ingredients", ingredients)
-                    Toast.makeText(this, "Resepti tallennettu", Toast.LENGTH_SHORT).show()
-                    setResult(Activity.RESULT_OK, intent)
-                    finish()
-                }
+            }
+            else {
+                val db = DBHelper.getInstance(this);
+                db.addRecipe(recipeName.text.toString(), ingredients)
+
+                val intent = Intent(this, RecipeActivity::class.java)
+                intent.putExtra("Name", recipeName.text.toString())
+                intent.putStringArrayListExtra("Ingredients", ingredients)
+                Toast.makeText(this, "Resepti tallennettu", Toast.LENGTH_SHORT).show()
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         }
 
@@ -76,6 +79,7 @@ class AddRecipeActivity : AppCompatActivity() {
         val newIngredient : TextView = TextView(this)
         newIngredient.id = index
         newIngredient.text = "$index. $ingredient"
+        newIngredient.setTextColor(ContextCompat.getColor(this, R.color.backgroundsininen))
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT)

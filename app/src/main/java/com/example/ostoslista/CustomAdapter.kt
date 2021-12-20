@@ -1,5 +1,6 @@
 package com.example.ostoslista
 
+import android.content.Intent
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 //class CustomAdapter(private val dataSet: Array<String>, private val images: Array<Int>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>(){
-class CustomAdapter(private val dataSet: MutableList<String>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>(){
+class CustomAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>(){
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemName: TextView
@@ -22,6 +23,10 @@ class CustomAdapter(private val dataSet: MutableList<String>) : RecyclerView.Ada
             itemView.setOnClickListener {
                 val position: Int = adapterPosition
                 Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(itemView.context, RecipeDetailsActivity::class.java)
+                val name = itemName.text.toString()
+                intent.putExtra("RecipeName", name)
+                itemView.context.startActivity(intent)
             }
         }
     }

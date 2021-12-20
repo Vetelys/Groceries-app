@@ -4,42 +4,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-
-
-class ShoppingListAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>(){
+class RecipeDetailsAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapter<RecipeDetailsAdapter.ViewHolder>(){
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemName: TextView = itemView.findViewById(R.id.product_text)
-        var checkBox: CheckBox = itemView.findViewById(R.id.product_checkbox)
+        var itemName: TextView = itemView.findViewById(R.id.ingredientTextView)
+        var imgButton: ImageButton = itemView.findViewById(R.id.ingredientImageButton)
+
         init{
-            itemView.setOnClickListener {
+            imgButton.setOnClickListener {
                 val position: Int = adapterPosition
                 Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
+                val db = DBHelper.getInstance(itemView.context)
+                db.insertProduct(dataSet[position])
             }
-            checkBox.setOnCheckedChangeListener { _, isChecked ->
-                if(isChecked){
-                    val db = DBHelper.getInstance(itemView.context)
-                    val name = dataSet[adapterPosition]
-                    db.removeProduct(name)
-                    dataSet.removeAt(adapterPosition)
-                    notifyItemRemoved(adapterPosition)
-                }
-            }
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.shoppinglist_layout, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.ingredient_layout, parent, false)
         return ViewHolder(v)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemName.text = dataSet[position]
-        viewHolder.checkBox.isChecked = false
     }
 
     // Return the size of your dataset (invoked by the layout manager)
