@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 class RecipeActivity : AppCompatActivity(){
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerView.Adapter<CustomAdapter.ViewHolder>? = null
+    private var recipes = arrayListOf<String>();
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class RecipeActivity : AppCompatActivity(){
         val recyclerView = findViewById<RecyclerView>(R.id.recipe_recyclerview)
         val db = DBHelper.getInstance(this)
 
-        val recipes: ArrayList<String> = db.getRecipes()
+        recipes = db.getRecipes()
 
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -51,6 +52,36 @@ class RecipeActivity : AppCompatActivity(){
             val intent = Intent(this, AddRecipeActivity::class.java)
             intent.putStringArrayListExtra("ExistingRecipes", recipes)
             getContent.launch(intent)
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume();
+        val db = DBHelper.getInstance(this);
+        val dbRecipes : ArrayList<String> = db.getRecipes();
+        db.close();
+        if(dbRecipes.size > recipes.size){
+            val difference = dbRecipes.toSet().minus(recipes.toSet());
+
+            for(elem in difference){
+                recipes.add(elem);
+            }
+
+            if(difference.isNotEmpty()){
+                adapter?.notifyItemRangeInserted(recipes.size-difference.size, recipes.size);
+            }
+        }
+
+        else if(dbRecipes.size < recipes.size){
+            val difference = recipes.toSet().minus(dbRecipes.toSet());
+
+            for(elem in difference){
+                val index = recipes.indexOf(elem);
+                recipes.removeAt(index);
+                adapter?.notifyItemRemoved(index);
+            }
+
         }
 
     }

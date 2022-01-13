@@ -17,10 +17,10 @@
             android:id="@+id/ingredientImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/add_button_img"
-            android:background="@drawable/roundbutton"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:background="@drawable/roundbutton"
+            android:src="@drawable/add_button_img" />
 
         <TextView
             android:id="@+id/ingredientTextView"

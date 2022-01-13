@@ -17,7 +17,7 @@ class ShoppingListAdapter(private val dataSet: ArrayList<String>) : RecyclerView
         init{
             itemView.setOnClickListener {
                 val position: Int = adapterPosition
-                Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
             }
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if(isChecked){

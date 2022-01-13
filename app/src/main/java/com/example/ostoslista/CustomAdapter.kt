@@ -22,7 +22,6 @@ class CustomAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapt
 
             itemView.setOnClickListener {
                 val position: Int = adapterPosition
-                Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
                 val intent = Intent(itemView.context, RecipeDetailsActivity::class.java)
                 val name = itemName.text.toString()
                 intent.putExtra("RecipeName", name)
