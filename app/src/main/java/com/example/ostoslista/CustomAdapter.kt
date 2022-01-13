@@ -21,7 +21,6 @@ class CustomAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapt
             itemName = itemView.findViewById(R.id.recipe_name)
 
             itemView.setOnClickListener {
-                val position: Int = adapterPosition
                 val intent = Intent(itemView.context, RecipeDetailsActivity::class.java)
                 val name = itemName.text.toString()
                 intent.putExtra("RecipeName", name)

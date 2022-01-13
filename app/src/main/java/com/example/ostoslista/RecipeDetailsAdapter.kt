@@ -17,7 +17,7 @@ class RecipeDetailsAdapter(private val dataSet: ArrayList<String>) : RecyclerVie
         init{
             imgButton.setOnClickListener {
                 val position: Int = adapterPosition
-                //Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(itemView.context, "Added ${dataSet[position]} to shopping list.", Toast.LENGTH_SHORT).show()
                 val db = DBHelper.getInstance(itemView.context)
                 db.insertProduct(dataSet[position])
             }
