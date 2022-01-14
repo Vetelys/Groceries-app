@@ -203,4 +203,12 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         db.close()
         return ingredientList
     }
+
+    fun removeProducts(itemsToRemove: ArrayList<String>) {
+        val db = this.writableDatabase
+        for(item in itemsToRemove){
+            db.delete(TBL_SHOPPINGLIST, "$NAME=?", arrayOf(item))
+        }
+        db.close()
+    }
 }

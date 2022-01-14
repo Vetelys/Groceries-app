@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -32,8 +34,22 @@ class RecipeDetailsActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         deleteButton.setOnClickListener {
-            db.removeRecipe(recipeName.toString())
-            finish()
+            val builder = AlertDialog.Builder(this);
+            builder.setMessage("Permanently delete recipe?")
+
+            builder.setPositiveButton("Yes"){_, _ ->
+                db.removeRecipe(recipeName.toString())
+                finish()
+            }
+            builder.setNeutralButton("Cancel"){_, _ ->
+                Toast.makeText(this, "Delete cancelled.", Toast.LENGTH_SHORT).show()
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+
+            alertDialog.setCancelable(true)
+            alertDialog.show()
+
         }
 
 

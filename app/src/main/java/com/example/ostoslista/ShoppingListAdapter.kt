@@ -1,31 +1,34 @@
 package com.example.ostoslista
 
+import android.graphics.Color
+import android.graphics.Paint
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 
 
-class ShoppingListAdapter(private val dataSet: ArrayList<String>) : RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>(){
+class ShoppingListAdapter(private val dataSet: ArrayList<String>, private val checkedData: SparseBooleanArray) : RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>(){
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemName: TextView = itemView.findViewById(R.id.product_text)
-        var checkBox: CheckBox = itemView.findViewById(R.id.product_checkbox)
+        val itemName: TextView = itemView.findViewById(R.id.product_text)
+        val checkBox: CheckBox = itemView.findViewById(R.id.product_checkbox)
+
         init{
-            itemView.setOnClickListener {
-                val position: Int = adapterPosition
-                //Toast.makeText(itemView.context, "You clicked on ${dataSet[position]}", Toast.LENGTH_SHORT).show()
-            }
+
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if(isChecked){
-                    val db = DBHelper.getInstance(itemView.context)
-                    val name = dataSet[adapterPosition]
-                    db.removeProduct(name)
-                    dataSet.removeAt(adapterPosition)
-                    notifyItemRemoved(adapterPosition)
+                    checkedData.put(adapterPosition, true)
+                    itemName.setTextColor(Color.GRAY)
+                    itemName.paintFlags = itemName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+                }else{
+                    checkedData.put(adapterPosition, false)
+                    itemName.setTextColor(Color.WHITE)
+                    itemName.paintFlags = itemName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
             }
         }
@@ -39,7 +42,7 @@ class ShoppingListAdapter(private val dataSet: ArrayList<String>) : RecyclerView
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemName.text = dataSet[position]
-        viewHolder.checkBox.isChecked = false
+        viewHolder.checkBox.isChecked = checkedData.get(position, false)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

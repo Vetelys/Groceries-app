@@ -5,10 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity(){
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>? = null
     private var shoppingListData = arrayListOf<String>();
+    private var checkedData = SparseBooleanArray();
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity(){
         val editButton = findViewById<Button>(R.id.editProduct_button)
         val addButton = findViewById<Button>(R.id.addProduct_button)
         val productText = findViewById<EditText>(R.id.newProduct_text)
+        val clearButton = findViewById<Button>(R.id.clearButton)
 
         val recyclerView = findViewById<RecyclerView>(R.id.shoppinglist_recyclerview)
         val db = DBHelper.getInstance(this)
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity(){
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        adapter = ShoppingListAdapter(shoppingListData)
+        adapter = ShoppingListAdapter(shoppingListData, checkedData)
         recyclerView.adapter = adapter
 
         recipesButton.setOnClickListener {
@@ -63,6 +65,43 @@ class MainActivity : AppCompatActivity(){
         editButton.setOnClickListener {
             productText.requestFocus()
             showKeyBoard(findViewById<View>(R.id.content).rootView)
+        }
+
+        clearButton.setOnClickListener {
+            val builder = AlertDialog.Builder(this);
+            builder.setMessage("Delete checked products from shopping list?")
+
+            builder.setPositiveButton("Yes"){_, _ ->
+
+                val itemcount: Int = (adapter as ShoppingListAdapter).itemCount
+                Log.d("count", itemcount.toString())
+                val itemsToRemove = arrayListOf<String>()
+                for(i in 0..itemcount){
+                    val holder = recyclerView.findViewHolderForAdapterPosition(i)
+
+                    if(holder != null){
+                        val checkBox = holder.itemView.findViewById<CheckBox>(R.id.product_checkbox)
+
+                        if(checkBox.isChecked){
+                            val name = holder.itemView.findViewById<TextView>(R.id.product_text).text.toString()
+                            itemsToRemove.add(name)
+                            Log.d("removed", name)
+                            checkedData.put(i, false)
+                        }
+                    }
+                }
+                db.removeProducts(itemsToRemove)
+                shoppingListData.removeAll(itemsToRemove)
+                (adapter as ShoppingListAdapter).notifyDataSetChanged()
+            }
+            builder.setNeutralButton("Cancel"){_, _ ->
+                Toast.makeText(this, "Delete cancelled.", Toast.LENGTH_SHORT).show()
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+
+            alertDialog.setCancelable(true)
+            alertDialog.show()
         }
     }
 
