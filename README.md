@@ -1,5 +1,6 @@
 # Groceries-app
 Android app to keep a shopping list, save recipes and import ingredients from the recipes to the shopping list
+Recipes and products are kept on a local sqlite database.
 
 ## Shopping list
 ![kuva](https://user-images.githubusercontent.com/48647132/149255893-f962e2a5-452d-4a4f-9573-7a88af8bd78e.png)
